@@ -1,0 +1,6 @@
+#!/bin/sh
+
+code --user-data-dir="$XDG_DATA_HOME/code-oss" --extensions-dir="$XDG_DATA_HOME/code-oss/extensions" "$@"
+
+sleep 2s
+rm -rf $HOME/.vscode-oss

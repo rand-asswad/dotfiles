@@ -1,0 +1,83 @@
+# SIMPLE ALIASES
+
+# dotfiles git repo
+alias dot='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+# start X session
+alias startx="startx $XINITRC"
+
+# dir shortcuts
+alias ls="ls --color=auto --group-directories-first"
+alias l="ls"
+alias la="ls -vA"
+alias ll="ls -l"
+alias lla="ls -vAl"
+
+# vim
+alias vi=vim
+alias sv='sudo -E vim'
+
+# execute last command as root
+alias please='sudo $(history -p \!\!)'
+# correct last command using 'thefuck' package
+eval "$(thefuck --alias)"
+
+# pacman and aur
+alias pm='sudo pacman'
+alias pms='sudo pacman -S'
+alias pmr='sudo pacman -R'
+alias pmrr='sudo pacman -Rcns'
+alias aur='yay'
+
+# other
+alias r='R -q --no-save'
+alias py='python'
+
+# remove ~/ clutter
+alias code=vscode # call ~/.local/bin/vscode
+alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
+alias svn --config-dir "$XDG_CONFIG_HOME/subversion"
+
+# youtube download
+alias yt='youtube-dl'
+alias yt-audio='youtube-dl --ignore-errors --output "%(title)s.%(ext)s" --extract-audio --audio-format mp3'
+
+# USEFUL FUNCTIONS
+
+# killgroup - kill all process containing a given string
+# usage: killgroup <string_exp>
+killgroup() {
+	for pid in $(ps -ef | grep "$1" | awk '{print $2}'); do
+		kill -9 $pid
+	done
+}
+
+# killtty - kill tty session
+# usage: killtty <tty_number>
+killtty() {
+	sudo systemctl stop getty@tty$1.service
+}
+
+# ex - archive extractor
+# usage: ex <file>
+ex () {
+  if [ -f $1 ] ; then
+    case $1 in
+      *.tar.bz2)   tar xjf $1   ;;
+      *.tar.gz)    tar xzf $1   ;;
+      *.bz2)       bunzip2 $1   ;;
+      *.rar)       unrar x $1     ;;
+      *.gz)        gunzip $1    ;;
+      *.tar)       tar xf $1    ;;
+      *.tbz2)      tar xjf $1   ;;
+      *.tgz)       tar xzf $1   ;;
+      *.zip)       unzip $1     ;;
+      *.Z)         uncompress $1;;
+      *.7z)        7z x $1      ;;
+      *)           echo "'$1' cannot be extracted via ex()" ;;
+    esac
+  else
+    echo "'$1' is not a valid file"
+  fi
+}
+

@@ -1,0 +1,57 @@
+" Environment
+set undodir=$XDG_DATA_HOME/vim/undo
+set directory=$XDG_DATA_HOME/vim/swap
+set backupdir=$XDG_DATA_HOME/vim/backup
+set viewdir=$XDG_DATA_HOME/vim/view
+set viminfo+='1000,n$XDG_DATA_HOME/vim/viminfo
+set runtimepath=$XDG_CONFIG_HOME/vim,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
+
+" Initialize plugins through vim-plug
+source $XDG_CONFIG_HOME/vim/plugins.vim
+source $XDG_CONFIG_HOME/vim/filetypes.vim
+
+" Basics
+syntax on
+filetype plugin indent on
+set number
+set relativenumber
+set tabstop=4
+set shiftwidth=4
+
+" Copy selected text into system clipboard (requires xclip)
+vnoremap <C-c> "cy<esc>:!echo -n '<C-R>c' \|<space>xclip<CR><enter>
+
+"" Update configs on save
+"autocmd BufWritePost $ZDOTDIR/* silent !source %
+"autocmd BufWritePost $SHELLDIR/* silent !source %
+"autocmd BufWritePost $XDG_CONFIG_HOME/X11/Xresources silent !xrdb $XDG_CONFIG_HOME/X11/Xresources
+"autocmd BufWritePost $XDG_CONFIG_HOME/i3/config silent !i3 restart
+"
+"" Syntax highlighting for config files
+"autocmd BufNewFile,BufRead $SHELLDIR/* set filetype=sh
+"autocmd BufNewFile,BufRead $ZDOTDIR/* set filetype=zsh
+"autocmd BufNewFile,BufRead $XDG_CONFIG_HOME/i3/config* set filetype=i3config
+"autocmd BufNewFile,BufRead $POLYBAR_DIR/* set filetype=dosini
+"autocmd BufNewFile,BufRead *.sh set filetype=sh
+
+" Automatically delete all tralling whitespace on save
+autocmd BufWritePre * %s/\s\+$//e
+
+" Folding/unfolding shortcuts
+function AnyFoldClosed()
+        let i = 1
+        while i <= line('$')
+                if foldclosed(i) == i
+                        return 1
+                else
+                        let i += 1
+                endif
+        endwhile
+        return 0
+endfunction
+nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
+vnoremap <Space> zf
+nnoremap <silent> <C-f> @=(AnyFoldClosed()?'zR':'zM')<CR>
+
+" Statusline appearance
+set laststatus=2

@@ -1,0 +1,244 @@
+#################################################
+#   _ _____    ____ ___  _   _ _____ ___ ____   #
+#  (_)___ /   / ___/ _ \| \ | |  ___|_ _/ ___|  #
+#  | | |_ \  | |  | | | |  \| | |_   | | |  _   #
+#  | |___) | | |__| |_| | |\  |  _|  | | |_| |  #
+#  |_|____/   \____\___/|_| \_|_|   |___\____|  #
+#                                               #
+#################################################
+
+set $terminal urxvt
+
+# Set mod key (Mod1=<Alt>, Mod4=<Super>)
+set $mod Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font
+font xft:URWGothic-Book 11
+
+# Use Mouse+$mod to drag floating windows
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec $terminal
+
+# kill focused window
+bindsym $mod+q kill
+bindsym $mod+Shift+q --release exec --no-startup-id xkill
+
+# start program launcher
+bindsym $mod+d exec rofi -modi run -show run -lines 6 -theme slate
+
+# print screen
+bindsym Print 				exec --no-startup-id scrot $SCREENSHOTS/%Y-%m-%d-%H:%M:%S.png
+bindsym $mod+Print 			exec --no-startup-id scrot -u $SCREENSHOTS/%Y-%m-%d-%H:%M:%S-window.png
+bindsym $mod+Shift+Print 	exec --no-startup-id scrot -s $SCREENSHOTS/%Y-%m-%d-%H:%M:%S-selected.png
+
+# change focus
+bindsym $mod+Left 			focus left
+bindsym $mod+Down 			focus down
+bindsym $mod+Up 			focus up
+bindsym $mod+Right 			focus right
+
+# move focused window
+bindsym $mod+Shift+Left 	move left
+bindsym $mod+Shift+Down 	move down
+bindsym $mod+Shift+Up 		move up
+bindsym $mod+Shift+Right 	move right
+
+# Move workspaces to different outputs
+bindsym $mod+Control+Left 	move workspace to output left
+bindsym $mod+Control+Right 	move workspace to output right
+
+# toggle fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+t layout toggle tabbed split
+bindsym $mod+Shift+h layout splith
+bindsym $mod+Shift+v layout splitv
+
+# toggle tiling / floating
+bindsym $mod+space floating toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+bindsym $mod+u [instance="bg"] scratchpad show; move position center
+bindsym $mod+p [instance="python"] scratchpad show; move position center
+
+# Floating terminal [$mod+u]
+for_window [instance="bg"] floating enable
+for_window [instance="bg"] resize set 800 800
+for_window [instance="bg"] move position center
+for_window [instance="bg"] move scratchpad
+exec --no-startup-id $terminal -name bg
+
+# Python terminal [$mod+p]
+for_window [instance="python"] floating enable
+for_window [instance="python"] resize set 800 800
+for_window [instance="python"] move position center
+for_window [instance="python"] move scratchpad
+exec --no-startup-id $terminal -name python -e ipython --pylab --no-banner
+
+
+# Define workspaces
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws0 10
+
+# switch to workspace
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws0
+
+
+# Move to workspace with focused container
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws0
+
+# Applications keybindings
+bindsym $mod+w exec --no-startup-id "$BROWSER"
+bindsym $mod+m exec --no-startup-id $terminal -name music -e ncmpcpp
+bindsym $mod+Shift+m exec --no-startup-id spotify
+bindsym $mod+e exec --no-startup-id $terminal -e ranger
+bindsym $mod+Shift+e exec --no-startup-id dolphin
+
+# Open applications on specific workspaces
+assign [class="(?i)brave-browser"] $ws2
+assign [class="code-oss"] $ws3
+assign [instance="music"] $ws4
+#assign [class="(?i)spotify"] $ws4
+for_window [class="Spotify"] move to workspace $ws4
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# Set shut down, restart and locking features
+bindsym $mod+Escape exec --no-startup-id i3exit lock
+set $mode_system Lock, Exit, Reboot, Shutdown
+bindsym $mod+Shift+Escape mode "$mode_system"
+mode "$mode_system" {
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym s exec --no-startup-id i3exit shutdown, mode "default"
+    #bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    #bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    #bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+
+    # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+# Resize window (you can also use the mouse for that)
+bindsym $mod+s mode "resize"
+mode "resize" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # exit resize mode: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+# Autostart applications
+exec --no-startup-id nm-applet
+exec --no-startup-id blueman-applet
+
+exec_always --no-startup-id feh --no-fehbg --bg-scale ~/backup/home/.config/wallpaper/map_of_maths.png
+
+exec_always --no-startup-id $XDG_CONFIG_HOME/polybar/launch.sh
+
+## Start i3bar to display a workspace bar (plus the system information i3status if available)
+#bar {
+#	i3bar_command i3bar
+#	status_command i3status
+#	position bottom
+#
+### please set your primary output first. Example: 'xrandr --output eDP1 --primary'
+##	tray_output primary
+##	tray_output eDP1
+#
+#	bindsym button4 nop
+#	bindsym button5 nop
+##   font xft:URWGothic-Book 11
+#	strip_workspace_numbers yes
+#
+#    colors {
+#        background #222D31
+#        statusline #F9FAF9
+#        separator  #454947
+#
+##                      border  backgr. text
+#        focused_workspace  #F9FAF9 #16a085 #292F34
+#        active_workspace   #595B5B #353836 #FDF6E3
+#        inactive_workspace #595B5B #222D31 #EEE8D5
+#        binding_mode       #16a085 #2C2C2C #F9FAF9
+#        urgent_workspace   #16a085 #FDF6E3 #E5201D
+#    }
+#}
+
+#############################
+### settings for i3-gaps: ###
+#############################
+
+# Set inner/outer gaps
+set $gaps_inner 30
+set $gaps_outer 30
+gaps inner $gaps_inner
+gaps outer $gaps_outer
+smart_gaps inverse_outer
+bindsym $mod+g gaps inner current toggle $gaps_inner; gaps outer current toggle $gaps_outer
+
+# Fullscreen worskpaces (for browser and IDEs)
+workspace $ws2 gaps inner 0
+workspace $ws2 gaps outer 0
+workspace $ws3 gaps inner 0
+workspace $ws3 gaps outer 0
+
+# Configure border style <normal|none|pixel N>
+default_border pixel 3
+default_floating_border normal
+hide_edge_borders smart_no_gaps
+
+
+# PulseAudio ConTroL & MPD
+set $inc_vol --no-startup-id pactl set-sink-volume 0 +5%
+set $dec_vol --no-startup-id pactl set-sink-volume 0 -5%
+set $mute --no-startup-id pactl set-sink-mute 0 toggle
+set $toggle_play --no-startup-id mpc toggle
+
+# Media keys
+bindsym XF86AudioMute           exec $mute
+bindsym XF86AudioRaiseVolume    exec $inc_vol
+bindsym XF86AudioLowerVolume    exec $dec_vol
+bindsym XF86AudioPlay			exec $toggle_play
+
+# Brightness [xorg-xbacklight]
+bindsym XF86MonBrightnessUp 	exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown 	exec xbacklight -dec 10

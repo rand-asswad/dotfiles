@@ -1,0 +1,168 @@
+
+[module/i3]
+type = internal/i3
+pin-workspaces = true
+strip-wsnumbers = true
+index-sort = true
+
+enable-click = true
+enable-scroll = true
+wrapping-scroll = true
+
+fuzzy-match = true
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
+ws-icon-5 = 6;
+ws-icon-6 = 7;
+ws-icon-7 = 8;
+ws-icon-8 = 9;
+ws-icon-9 = 10;
+ws-icon-default =
+
+
+[module/time]
+type = internal/date
+interval = 10
+format =  <label>
+label = %time%
+time = "%H:%M"
+
+[module/date]
+type = internal/date
+interval = 100
+format =  <label>
+label = %date%
+date = "%d/%m/%Y"
+date-alt = "%A, %d %B %Y"
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+; run `pacmd list-sinks | grep name` to find sink
+sink = alsa_output.pci-0000_00_1b.0.analog-stereo
+use-ui-max = true
+interval = 5
+
+click-right = pavucontrol &
+
+format-volume = <ramp-volume> <label-volume>
+ramp-volume-0 = 
+ramp-volume-1 = 
+ramp-volume-2 = 
+ramp-volume-3 = 
+ramp-volume-4 = 
+label-volume = %percentage%%
+
+format-muted = <label-muted>
+label-muted = 
+
+[module/battery]
+type = internal/battery
+
+; run `ls -1 /sys/class/power_supply/`
+battery = BAT0
+adapter = AC
+
+poll-interval = 5
+
+format-charging = <animation-charging> <label-charging>
+label-charging = %percentage%%
+animation-charging-font = 3
+animation-charging-0 = 
+animation-charging-1 = 
+animation-charging-2 = 
+animation-charging-3 = 
+animation-charging-4 = 
+animation-charging-5 = 
+animation-charging-6 = 
+animation-charging-7 = 
+animation-charging-8 = 
+animation-charging-9 = 
+animation-charging-10 = 
+; number of miliseconds per frame
+animation-charging-framerate = 300
+
+format-discharging = <ramp-capacity> <label-discharging>
+time-format = %H:%M
+label-discharging = %percentage%% (%time%)
+ramp-capacity-font = 3
+ramp-capacity-0 = 
+ramp-capacity-1 = 
+ramp-capacity-2 = 
+ramp-capacity-3 = 
+ramp-capacity-4 = 
+ramp-capacity-5 = 
+ramp-capacity-6 = 
+ramp-capacity-7 = 
+ramp-capacity-8 = 
+ramp-capacity-9 = 
+ramp-capacity-10 = 
+
+label-full =  FULL
+
+[module/xkeyboard]
+type = internal/xkeyboard
+format =   <label-layout>
+label-layout = %icon%
+layout-icon-0 = fr;FR
+layout-icon-1 = ara;AR
+
+
+[module/mpd]
+type = internal/mpd
+format-online =  <label-song>  <icon-prev> <toggle> <icon-next>
+label-song =  "%artist% - %title%"
+label-song-ellipsis = true
+label-offline = "MPD is offline"
+
+icon-play = 
+icon-pause = 
+icon-stop = 
+icon-prev = 
+icon-next = 
+icon-seekb = ⏪
+icon-seekf = ⏩
+icon-random = 🔀
+icon-repeat = 🔁
+icon-repeatone = 🔂
+icon-single = 🔂
+icon-consume = ✀
+
+
+[module/wifi]
+type = internal/network
+interface = wlp2s0
+
+format-connected = <ramp-signal>
+format-disconnected =
+
+ramp-signal-0 = 
+ramp-signal-1 = 
+ramp-signal-2 = 
+ramp-signal-3 = 
+ramp-signal-4 = 
+
+[module/ethernet]
+type = internal/network
+interface = enp3s0f1
+
+[module/tethered]
+type = internal/network
+interface = enp0s20u1
+
+
+[module/brightness]
+type = internal/backlight
+; run `ls -1 /sys/class/backlight` to find card
+card = intel_backlight
+format = <ramp> <label>
+label = %percentage%%
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-4 = 
+

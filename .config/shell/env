@@ -1,0 +1,104 @@
+# Environment variables for all shells
+
+#----- Path variable -----
+PATH=$PATH:$HOME/.local/bin
+
+#----- XDG base directories -----
+export XDG_DESKTOP_DIR="$HOME"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+
+export XDG_DATA_DIRS=/usr/local/share:/usr/share
+export XDG_CONFIG_DIRS=/etc/xdg
+
+#----- Default programs -----
+export EDITOR="vim"
+export VISUAL="vim"
+export TERMINAL="urxvt"
+export BROWSER="brave"
+export STATUSBAR="polybar"
+
+#----- Media directories -----
+export MUSIC="$HOME/Music"
+export PICTURES="$HOME/Pictures"
+export SCREENSHOTS="$HOME/screenshots"
+export DOWNLOADS="$HOME/Downloads"
+export DOCUMENTS="$HOME/Documents"
+
+#----- Relocate config files ------
+
+# Polybar directory
+export POLYBAR_DIR="$XDG_CONFIG_HOME/polybar"
+
+# Git & SSH
+SSH_CONFIG="$XDG_CONFIG_HOME/ssh/config"
+SSH_KNOWN_HOSTS="$XDG_DATA_HOME/ssh/known_hosts"
+SSH_OPTIONS="-o UserKnownHostsFile=$SSH_KNOWN_HOSTS"
+export SSH_COMMAND="ssh -F $SSH_CONFIG $SSH_OPTIONS"
+export GIT_SSH_COMMAND="$SSH_COMMAND"
+
+# Qt config
+export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_AUTO_SCREEN_SCALE_FACTOR=0
+
+# R config
+export R_ENVIRON_USER="$XDG_CONFIG_HOME/R/Renviron"
+export TINYTEX_ROOT="$XDG_DATA_HOME/R/lib/tinytex"
+export TINYTEX_DIR="$TINYTEX_ROOT/texlive"
+export TINYTEX_BIN="$TINYTEX_ROOT/bin"
+PATH="$PATH:$TINYTEX_BIN"
+
+# Node and npm
+export NODE_PATH="$XDG_DATA_HOME/npm/lib/node_modules"
+export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
+PATH="$PATH:$(npm config get prefix)/bin"
+
+# Ruby gems
+PATH="$PATH:$(ruby -e 'puts Gem.user_dir')/bin"
+# used gem 'xdg' for enforcing XDG standard installed via AUR
+export GEM_HOME="$XDG_DATA_HOME/gem"
+export GEM_SPEC_CACHE="$XDG_CACHE_HOME/gem"
+# bundler
+export BUNDLE_USER_CONFIG="$XDG_CONFIG_HOME/bundle"
+export BUNDLE_USER_CACHE="$XDG_CACHE_HOME/bundle"
+export BUNDLE_USER_PLUGIN="$XDG_DATA_HOME/bundle"
+
+
+# Relocate files
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc-2.0"
+export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+export INPUTRC="$XDG_CONFIG_HOME/inputrc"
+export VIMDOTDIR="$XDG_CONFIG_HOME/vim"
+export VIMINIT='set rtp^=$VIMDOTDIR | let $MYVIMRC="$VIMDOTDIR/vimrc" | source $MYVIMRC'
+export KDEHOME="$XDG_CONFIG_HOME/kde"
+
+export CCACHE_CONFIGPATH="$XDG_CONFIG_HOME/ccache.config"
+export CCACHE_DIR="$XDG_CACHE_HOME/ccache"
+export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
+export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
+export XCOMPOSEFILE="$XDG_CONFIG_HOME/X11/xcompose"
+export XCOMPOSECACHE="$XDG_CACHE_HOME/X11/xcompose"
+
+export PYLINTHOME="$XDG_CACHE_HOME/pylint"
+export PYTHON_EGG_CACHE="$XDG_CACHE_HOME/python-eggs"
+export IPYTHONDIR="$XDG_CONFIG_HOME/jupyter"
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
+
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME/java"
+
+export LESSKEY="$XDG_CONFIG_HOME/less/lesskey"
+export LESSHISTFILE="$XDG_CACHE_HOME/less/history"
+export LESSHISTFILE=-
+
+export MYSQL_HISTFILE="$XDG_DATA_HOME/mysql_history"
+
+export GNUPGHOME="$XDG_DATA_HOME/gnupg"
+#gpg2 --homedir "$XDG_DATA_HOME/gnupg"
+
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+
+
+#---- export appended PATH -----
+export PATH

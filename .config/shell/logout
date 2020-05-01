@@ -1,0 +1,5 @@
+#!/bin/sh
+# script to run at logout
+
+# clean the shit at home
+cleanhome

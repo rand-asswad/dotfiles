@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# HELP MENU
+manual() { name; synopsis; description; options; }
+error() { echo "Use ${B}screen --help${N} for help with this command"; exit 1; }
+
+B=$(tput bold)
+N=$(tput sgr0)
+
+name() { echo -e "${B}NAME${N}\n\ttinytex - shell script for calling R tinytex library\n\n"; }
+synopsis() { echo -e "${B}SYNOPSIS${N}\n\t${B}tinytex${N} [OPTION] <texfile>\n\n"; }
+description() { echo -e "${B}DESCRIPTION\n\t${B}tinytex${N} is a utility for compiling tex files through the R library ${B}tinytex${N} that is a wrapper around the texlive package.\n\n"; }
+options() {
+	echo -e "${B}OPTIONS${N}\n"
+	echo -e "\t${B}-p, --pdf, pdflatex${N}\n\t\tCompiles using pdflatex engine.\n"
+	echo -e "\t${B}-l, --lua, lualatex${N}\n\t\tCompiles using lualatex engine.\n"
+	echo -e "\t${B}-x, --xe, xelatex${N}\n\t\tCompiles using xelatex engine.\n"
+	echo -e "\t${B}-h, --help${N}\n\t\tDisplay help text and exit.\n\n"
+}
+error() { echo "Use ${B}tinytex --help${N} for help with this command"; exit 1; }
+
+# PARSE ARGUMENTS
+case $# in
+	2)
+		ENGINE=$1
+		TEXFILE=$2
+		;;
+	1)
+		ENGINE="pdf"
+		if [ $1 == "-h" ] || [ $1 == "--help" ]; then
+			manual
+			exit 0;
+		fi
+		TEXFILE=$1
+		;;
+	*)
+		error
+		exit 1
+		;;
+esac
+
+# FIND ENGINE
+case $ENGINE in
+	pdflatex|pdf|--pdf|-p) FUNC="pdflatex";;
+	lualatex|lua|--lua|-l) FUNC="lualatex";;
+	xelatex|xe|--xe|-x) FUNC="xelatex";;
+	*) error; exit 1;;
+esac
+
+echo "Compiling $TEXFILE using $FUNC engine..."
+Rscript -e "tinytex::$FUNC(\"$TEXFILE\")"

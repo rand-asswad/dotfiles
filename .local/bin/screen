@@ -1,0 +1,134 @@
+#!/bin/bash
+
+manual() { name; synopsis; description; options; }
+
+B=$(tput bold)
+N=$(tput sgr0)
+
+name() { echo -e "${B}NAME${N}\n\tscreen - utility for dual screen handeling\n\n"; }
+synopsis() { echo -e "${B}SYNOPSIS${N}\n\t${B}screen${N} [-o|--option] [argument]\n\n"; }
+description() { echo -e "${B}DESCRIPTION\n\t${B}screen${N} is a utility for configuring display through ${B}xrandr${N} commands, it handles output for a primary screen and a connected HDMI or VGA display.\n\n"; }
+options() {
+	echo -e "${B}OPTIONS${N}\n"
+	echo -e "\t${B}-p, --primary${N}\n\t\tEnables primary display only.\n"
+	echo -e "\t${B}-s, --secondary${N} [<HDMI|VGA>]\n\t\tEnables secondary display only. Takes one optional argument HDMI or VGA. The default value is the connected display, if both are connected an error occurs.\n"
+	echo -e "\t${B}-d, --dual${N} [<HDMI|VGA>]\n\t\tEnables primary and secondary display by extending the output. Takes one optional argument similar to ${B}--secondary${N}.\n"
+	echo -e "\t${B}-m, --mirror${N} [<HDMI|VGA>]\n\t\tEnables primary and secondary display by mirroring the output. Takes one optional argument similar to ${B}--secondary${N}.\n"
+	echo -e "\t${B}-h, --help${N}\n\t\tDisplay help text and exit.\n\n"
+}
+
+error() { echo "Use ${B}screen --help${N} for help with this command"; exit 1; }
+not_connected() { echo "Error. No $1 output is connected."; error; }
+not_supported() { echo "Error. Output of type '$1' is not supported."; error; }
+
+if [ $1 == "-h" ] || [ $1 == "--help" ]; then
+	manual
+	exit 0
+fi
+
+if [[ $# -gt 2 ]]; then
+	error
+fi
+
+HDMI=`xrandr -q | grep ' connected' | grep HDMI | cut -d " " -f 1`
+VGA=`xrandr -q | grep ' connected' | grep VGA | cut -d " " -f 1`
+MAIN=`xrandr -q | grep ' connected' | grep -v HDMI | grep -v VGA | cut -d " " -f 1`
+
+if [[ $HDMI ]]; then
+	if [[ $VGA ]]; then 
+		BOTH=true
+	else
+		CONNECTED=$HDMI
+		NOT_CONNECTED=$VGA
+	fi
+else
+	if [[ $VGA ]]; then
+		CONNECTED=$VGA
+		NOT_CONNECTED=$HDMI
+	else
+		NONE=true
+	fi
+fi
+
+secondary() {
+	if [[ $2 ]]; then
+		xrandr $HDMI_on --primary --auto --output $MAIN --off $2 --off
+	else
+		xrandr $HDMI_on --primary --auto --output $MAIN --off
+	fi
+}
+
+main() {
+	if [[ $NONE ]]; then
+		xrandr --output $MAIN --primary --auto --output $HDMI --off --output $VGA --off
+	elif [[ $CONNECTED ]]; then
+		xrandr --output $MAIN --primary --auto --output $CONNECTED --off
+	else
+		xrandr --output $MAIN --primary --auto
+	fi
+}
+
+dual() {
+	if [[ $2 ]]; then
+		xrandr	--output $MAIN --primary --mode 1920x1080 --pos 0x640 \
+				--output $1 --mode 2560x1440 --pos 1920x0 \
+				--output $2 --off
+	else
+		xrandr	--output $MAIN --primary --mode 1920x1080 --pos 0x640 \
+				--output $1 --mode 2560x1440 --pos 1920x0
+	fi
+}
+
+
+mirror() {
+	if [[ $2 ]]; then
+		xrandr	--output $MAIN --primary --auto \
+				--output $1 --auto --same-as $MAIN\
+				--output $2 --off
+	else
+		xrandr	--output $MAIN --primary --auto \
+				--output $1 --auto --same-as $MAIN
+	fi
+}
+
+user_command() {
+	case $1 in
+		-p|--primary) main ;;
+		-s|--secondary) secondary $2 $3 ;;
+		-d|--dual) dual $2 $3 ;;
+		-m|--mirror) mirror $2 $3 ;;
+		*) error ;;
+	esac
+	i3-msg restart
+	exit 0
+}
+
+case $# in
+	2)
+		if [ $1 == "-p" ] || [ $1 == "--primary" ]; then error; fi
+		if [ $2 == "HDMI" ] && ! [[ $HDMI ]]; then not_connected $2; fi
+		if [ $2 == "VGA" ] && ! [[ $VGA ]]; then not_connected $2; fi
+		case $2 in
+			HDMI) user_command $1 $HDMI $VGA ;;
+			VGA) user_command $2 $VGA $HDMI ;;
+			*) not_supported $2 ;;
+		esac
+		;;
+	1)
+		if [ $1 == "-p" ] || [ $1 == "--primary" ]; then user_command $1; fi
+		if [[ $CONNECTED ]]; then
+			user_command $1 $CONNECTED
+		else
+			error
+		fi
+		;;
+	0)
+		if [[ $CONNECTED ]]; then
+			user_command -d $CONNECTED
+		elif [[ $NONE ]]; then
+			user_command -p
+		else
+			error
+		fi
+		;;
+esac

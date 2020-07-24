@@ -8,13 +8,13 @@ setxkbmap -layout fr,ar -option 'grp:alt_shift_toggle'
 xrdb -load $XDG_CONFIG_HOME/X11/Xresources
 
 # Run xrandr screen layout script
-sh $HOME/backup/home/.screenlayout/chesnay.sh
+sh $XDG_CONFIG_HOME/screenlayout/default.sh
 
 # Run compositor in background
 picom -b
 
 # Add background
-feh --no-fehbg --bg-scale ~/backup/home/.config/wallpaper/map_of_maths.png
+feh --no-fehbg --bg-scale $XDG_CONFIG_HOME/wallpaper/map_of_maths.png
 
 # Start MusicPlayerDaemon
 mpd &

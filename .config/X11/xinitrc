@@ -11,7 +11,7 @@ xrdb -load $XDG_CONFIG_HOME/X11/Xresources
 sh $XDG_CONFIG_HOME/screenlayout/default.sh
 
 # Run compositor in background
-picom -b
+picom -b --config $XDG_CONFIG_HOME/picom/picom.conf
 
 # Add background
 feh --no-fehbg --bg-scale $XDG_CONFIG_HOME/wallpaper/map_of_maths.png
